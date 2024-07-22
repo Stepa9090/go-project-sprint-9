@@ -34,16 +34,13 @@ func Generator(ctx context.Context, ch chan<- int64, fn func(int64)) {
 func Worker(in <-chan int64, out chan<- int64) {
 	// 2. Функция Worker
 	// ...
-	for {
-		defer close(out)
-		v, ok := <-in
-		if !ok {
-			break
-		}
+	defer close(out)
+	for v := range in {
 		out <- v
 		time.Sleep(1 * time.Millisecond)
 	}
 }
+
 func main() {
 	chIn := make(chan int64)
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
